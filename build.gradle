@@ -1,0 +1,47 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+ }
+
+plugins {
+    id 'java'
+    id "com.github.johnrengelman.shadow" version "7.1.2"
+}
+
+group = 'de.telekom'
+version = '1.0-SNAPSHOT'
+
+apply plugin: 'java'
+apply plugin: 'com.github.johnrengelman.shadow'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.slf4j:slf4j-api:2.0.16'
+    implementation 'org.slf4j:slf4j-simple:2.0.16'
+    implementation 'com.pi4j:pi4j-core:2.7.0'
+    implementation 'com.pi4j:pi4j-plugin-linuxfs:2.7.0'
+    implementation 'com.pi4j:pi4j-plugin-raspberrypi:2.7.0'
+//    implementation 'com.pi4j:pi4j-plugin-gpiod:2.7.0'
+//    implementation 'com.pi4j:pi4j-plugin-pigpio:2.7.0'
+
+    testImplementation platform('org.junit:junit-bom:5.10.0')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+}
+
+shadowJar {
+    mergeServiceFiles()
+}
+
+jar {
+    manifest {
+        attributes("Main-Class": "me.micartey.esc.Main")
+    }
+}
+
+test {
+    useJUnitPlatform()
+}
