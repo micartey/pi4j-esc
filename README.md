@@ -27,6 +27,8 @@ That means a maximum of 4 signals can be generated
 
 ## Enable PWM for GPIO 18 and 19
 
+
+
 `sudo vim /boot/firmware/config.txt`
 
 ```txt
@@ -37,5 +39,3 @@ dtoverlay=pwm-2chan
 # GPIO 18 = channel 0
 # GPIO 19 = channel 0
 ```
-
-Yes these are commented out but this is correct for some reason.
