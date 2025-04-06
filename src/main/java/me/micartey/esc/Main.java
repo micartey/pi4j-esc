@@ -4,47 +4,60 @@ import com.pi4j.Pi4J;
 import com.pi4j.context.Context;
 import com.pi4j.io.pwm.Pwm;
 import com.pi4j.io.pwm.PwmType;
+import me.micartey.esc.input.ControllerInput;
+import me.micartey.esc.input.XBoxController;
 
 public class Main {
 
     private static final int PWM_FREQUENCY = 50;
 
     public static void main(String[] args) throws Exception {
-        Context pi4J = Pi4J.newAutoContext();
+        try (XBoxController xBoxController = new XBoxController()) {
+            Context pi4J = Pi4J.newAutoContext();
+            int channel = 0;
 
-        System.out.println(pi4J.boardInfo().getBoardModel().getLabel());
+            Pwm pwm = pi4J.create(
+                    Pwm.newConfigBuilder(pi4J)
+                            .id("Channel" + channel)
+                            .name("ESC1")
+                            .address(channel)
+                            .pwmType(PwmType.HARDWARE)
+                            .provider("linuxfs-pwm")
+                            .initial(0)
+                            .shutdown(0)
+                            .build()
+            );
 
-        int channel = 0;
+            /*
+             * Initialize ESC by setting it to max speed and after
+             * a few seconds to min speed
+             */
+            setEscSpeed(pwm, 100);
+            Thread.sleep(2000);
+            setEscSpeed(pwm, 0);
+            Thread.sleep(2000);
 
-        Pwm pwm = pi4J.create(
-                Pwm.newConfigBuilder(pi4J)
-                        .id("Channel" + channel)
-                        .name("ESC1")
-                        .address(channel)
-                        .pwmType(PwmType.HARDWARE)
-                        .provider("linuxfs-pwm")
-                        .initial(0)
-                        .shutdown(0)
-                        .build()
-        );
 
-        /*
-         * Initialize ESC by setting it to max speed and after
-         * a few seconds to min speed
-         */
-        setEscSpeed(pwm, 100);
-        Thread.sleep(2000);
-        setEscSpeed(pwm, 0);
-        Thread.sleep(2000);
+            /*
+             * Set a default speed of 8
+             */
+            double speed = 8;
+            while (xBoxController.getValue(ControllerInput.HOME) == 0) {
+                double inputY = xBoxController.getValue(ControllerInput.LEFT_JOYSTICK_UP_DOWN) / -32767;
 
-        /*
-         * Set the speed to 3% for 20 seconds and terminate afterward.
-         * This is only for demonstration and verification that the motor spins
-         */
-        setEscSpeed(pwm, 5);
-        Thread.sleep(20000);
+                if (Math.abs(inputY) < 0.1)
+                    continue;
 
-        pi4J.shutdown();
+                speed = Math.max(0, speed + inputY);
+
+                setEscSpeed(pwm, speed);
+                System.out.println(speed);
+
+                Thread.sleep(50);
+            }
+
+            pi4J.shutdown();
+        }
     }
 
     /**
