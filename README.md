@@ -7,7 +7,7 @@
 <br />
 
 <div align="center">
-    <img src="assets/pinout.webp" height="300px" width="540px">
+    <img src="assets/pinout.webp" height="300px" width="550px">
     <br />
     <a href="https://randomnerdtutorials.com/raspberry-pi-pwm-python/">
         Source of image
