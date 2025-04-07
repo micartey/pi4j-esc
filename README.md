@@ -1,7 +1,7 @@
 # pi-esc
 
 <div align="center">
-    <img src="https://img.shields.io/badge/Rhaspberry%20Pi-4B-red?style=for-the-badge&logo=raspberrypi&logoSize=large" />
+    <img src="https://img.shields.io/badge/Raspberry%20Pi-4B-red?style=for-the-badge&logo=raspberrypi&logoSize=large" />
 </div>
 
 <br />
@@ -18,12 +18,16 @@
 
 ## Introduction
 
-This simple example controlls a brushless motor using an electronic speed controller (ESC) using an XBox Controller.
+This simple example controlls a brushless motor via an electronic speed controller (ESC).
+You can controll the throttle using an the left joystick on any controller as long as the inputs are being read correctly using `jstest`. 
 
-Connect **GPIO 18** to your ESC and make sure both have a **common ground**.
-Afterward, connect a controller and start the application.
-
-You should be able to increase and decrase speed with your left joystick.
+<div align="center">
+    <img src="assets/pintout_drawing.jpg" height="400px" width="545px">
+    <p>
+        Connect <b>GPIO 18</b> to your ESC and make sure both have a <b>common ground</b>
+    </p>
+    <br />
+</div>
 
 ### Enable PWM
 
@@ -36,7 +40,7 @@ Edit the config file with sudo permission:
 At the bottom, you will need to add / edit the following lines.
 Don't get confused with the `#` which indicates that the last line is a comment - It is supposed to be that way.
 
-```txt
+```toml
 ...
 
 [all]
@@ -50,9 +54,10 @@ The joystick inputs are being parsed from the `jstest` output.
 If not already present, install and validate it using the following commands:
 
 ```bash
-sudo apt-get install joystick
+sudo apt-get install -y joystick
 
 # To validate that your input can be read correctly, execute
 jstest /dev/input/js0
 ```
 
+In case you can't controll the throttle using the left joystick, you might need to edit the mapping in `ControllerInput`.
