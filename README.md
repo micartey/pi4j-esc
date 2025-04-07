@@ -40,7 +40,7 @@ Edit the config file with sudo permission:
 At the bottom, you will need to add / edit the following lines.
 Don't get confused with the `#` which indicates that the last line is a comment - It is supposed to be that way.
 
-```toml
+```ini
 ...
 
 [all]
